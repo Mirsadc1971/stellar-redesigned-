@@ -46,15 +46,19 @@ export function ViolationReportForm() {
 
     try {
       const submissionData = {
+        access_key: import.meta.env.VITE_WEB3FORMS_ACCESS_KEY,
         ...formData,
         violation_types: formData.violation_types.join(', '),
-        _subject: `Violation Report: ${formData.violation_types.join(', ')} - ${formData.reporter_name}`
+        subject: `Violation Report: ${formData.violation_types.join(', ')} - ${formData.reporter_name}`,
+        from_name: formData.reporter_name,
+        replyto: formData.reporter_contact,
       };
 
-      const response = await fetch(import.meta.env.VITE_FORMSPREE_VIOLATION_REPORT_ENDPOINT, {
+      const response = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json',
         },
         body: JSON.stringify(submissionData),
       });

@@ -54,13 +54,14 @@ export function BoardNominationForm() {
     setSubmitStatus('idle');
 
     try {
-      const endpoint = import.meta.env.VITE_FORMSPREE_BOARD_NOMINATION_ENDPOINT;
+      const accessKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY;
 
-      if (!endpoint) {
-        throw new Error('Formspree endpoint not configured');
+      if (!accessKey) {
+        throw new Error('Web3Forms access key not configured');
       }
 
       const submissionData = {
+        access_key: accessKey,
         nominee_name: formData.nominee_name,
         nominee_email: formData.nominee_email,
         nominee_phone: formData.nominee_phone,
@@ -77,10 +78,12 @@ export function BoardNominationForm() {
         acknowledged_terms: formData.acknowledged_terms ? 'Yes' : 'No',
         acknowledged_commitment: formData.acknowledged_commitment ? 'Yes' : 'No',
         acknowledged_attendance: formData.acknowledged_attendance ? 'Yes' : 'No',
-        _subject: `Board Nomination Application - ${formData.nominee_name}`
+        subject: `Board Nomination Application - ${formData.nominee_name}`,
+        from_name: formData.nominee_name,
+        replyto: formData.nominee_email,
       };
 
-      const response = await fetch(endpoint, {
+      const response = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -281,10 +284,10 @@ export function BoardNominationForm() {
         </div>
       )}
 
-      {!import.meta.env.VITE_FORMSPREE_BOARD_NOMINATION_ENDPOINT && (
+      {!import.meta.env.VITE_WEB3FORMS_ACCESS_KEY && (
         <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-yellow-800">
           <p className="font-semibold">Configuration Error</p>
-          <p className="text-sm">Formspree endpoint not configured. Please restart the dev server.</p>
+          <p className="text-sm">Web3Forms access key not configured. Please restart the dev server.</p>
         </div>
       )}
 
